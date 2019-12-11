@@ -14,18 +14,20 @@ def scheduled_date_file_recording():
     count_days_and_month = 0
 
     for day_and_month in day_month_original_conversion_to_num:
+        # Here I check whether all entered date and month are numbers and count them
         try:
-            day_and_month = int(day_and_month)
+            int(day_and_month)
         except ValueError:
             pass
-        if isinstance(day_and_month, int):
+        else:
             count_days_and_month += 1
 
+    # Check if this task is already in the directory
     if task_name_conversion_to_json in os.listdir("../schedule_recording_program"):
         print("This name of file are used")
 
     if count_days_and_month > 0:
-            # I check if there is such a file in the directory
+            # If the job is not in the directory
         if task_name_conversion_to_json not in os.listdir("../schedule_recording_program"):
             # Here I take only the data I need, that is, the date and month, remove the rest with a slice, and then
             # replace the hyphen with a period.
@@ -36,23 +38,51 @@ def scheduled_date_file_recording():
             "-", ".")
 
             with io.open(task_name_conversion_to_json, "w", encoding='utf8') as file:
-                #file.write(f"Scheduled from {today} to {day_month_second_version}")
-                file.write(json.dumps({task_name: f"Scheduled from {today} to {day_month_second_version}"}, sort_keys=True,
-                           separators=(",", ": "), indent=4, ensure_ascii=False))
+                # And here I use f, I just swapped because it’s not clear yet for what reasons, they are not in order
+                file.write(json.dumps({task_name: f"Scheduled from {today} to {day_month_second_version[3:5]}.{day_month_second_version[0:2]}"},
+                    sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False))
+
+
 
 
     elif count_days_and_month == 0:
+
         if day_month_original == "завтра":
             if task_name_conversion_to_json not in os.listdir("../schedule_recording_program"):
 
                 today = str(datetime.strptime(f"{date.today().month}.{date.today().day}", "%d.%m"))[5:10].replace(
                 "-", ".")
 
-                with io.open(task_name_conversion_to_json, "w", encoding="utf8") as file:
-                # Here I do almost the same thing as above, but add + 1 day, based on the fact that i need the next
-                # day in the task, that is, tomorrow.
-                    file.write(json.dumps({task_name : f"Scheduled on {today.replace(today[1:2], str(int(today[1:2]) + 1))}"},
-                    sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False))
+                # And I’m trying to intercept all errors of values ​​that may arise.
+                try:
+                    if int(today[0:2]) <= 30:
+                        with io.open(task_name_conversion_to_json, "w", encoding="utf8") as file:
+                            # Here I do almost the same thing as above, but add + 1 day, based on the fact that i need
+                            # the next day in the task, that is, tomorrow.
+                            file.write(json.dumps({task_name: f"Scheduled on {date.today().day + 1}.{today[3:5]}"},
+                                sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False))
+
+
+                    elif int(today[0:2]) > 30 and int(today[3:5]) <= 11:
+
+                        new_day = today.replace(today[0:2], "01")
+                        with io.open(task_name_conversion_to_json, "w", encoding="utf8") as file:
+                            # Here I do almost the same thing as above, but add + 1 day, based on the fact that
+                            # i need the next day in the task, that is, tomorrow.
+                            file.write(json.dumps({task_name: f"Scheduled on {new_day}.{int(today[3:5]) + 1}"},
+                                    sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False))
+
+
+                    elif int(today[0:2]) > 30 and int(today[3:5]) > 11:
+                        new_day = today.replace(today[0:2], "01")
+                        with io.open(task_name_conversion_to_json, "w", encoding="utf8") as file:
+                            file.write(json.dumps({task_name: f"Scheduled on {new_day}.{'01'}"},
+                                        sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False))
+
+                except ValueError:
+                    pass
+
+
 
 
         elif task_name == "послезавтра":
@@ -62,10 +92,34 @@ def scheduled_date_file_recording():
                 today = str(datetime.strptime(f"{date.today().month}.{date.today().day}", "%d.%m"))[5:10].replace(
                 "-", ".")
 
-                with io.open(task_name_conversion_to_json, "w", encoding="utf8") as file:
-                # Then I do almost the same thing as above, but add + 2 day, based on the fact that I need the next day
-                #  in the task, that is, the day after tomorrow.
-                    file.write(json.dumps({task_name : f"Scheduled on {today.replace(today[1:2], str(int(today[1:2]) + 2))}"},
-                    sort_keys = True, separators=(",", ": "), indent=4, ensure_ascii=False))
+
+                # And I’m trying to intercept all errors of values ​​that may arise.
+                try:
+                    if int(today[0:2]) <= 30:
+                        with io.open(task_name_conversion_to_json, "w", encoding="utf8") as file:
+                            # Here I do almost the same thing as above, but add + 2 days, based on the fact that i need
+                            # the next day in the task, that is, tomorrow.
+                            file.write(json.dumps({task_name: f"Scheduled on {date.today().day + 1}.{today[3:5]}"},
+                                                  sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False))
+
+                    elif int(today[0:2]) > 30 and int(today[3:5]) <= 11:
+                        new_day = today.replace(today[0:2], "02")
+                        with io.open(task_name_conversion_to_json, "w", encoding="utf8") as file:
+                            # Here I do almost the same thing as above, but add + 2 days, based on the fact that i need
+                            # the next day in the task, that is, tomorrow.
+                            file.write(json.dumps({task_name: f"Scheduled on {new_day}.{int(today[3:5]) + 1}"},
+                                                  sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False))
+
+                    # Here, in addition to the fact that I add 2 days to a month, I also change the month itself, based
+                    #  on the fact that month 12
+                    elif int(today[0:2]) > 30 and int(today[3:5]) > 11:
+                        new_day = today.replace(today[0:2], "02")
+                        with io.open(task_name_conversion_to_json, "w", encoding="utf8") as file:
+                            file.write(json.dumps({task_name: f"Scheduled on {new_day}.{'01'}"},
+                                                  sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False))
+
+                except ValueError:
+                    pass
+
 
 print(scheduled_date_file_recording())

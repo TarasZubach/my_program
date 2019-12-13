@@ -4,15 +4,15 @@ import os
 from datetime import datetime, timedelta
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-task', '--task_name', nargs=1, help='Введите задание: ')
-parser.add_argument('-day_and_month', '--day_and_month', nargs=1, help='Введите дату и месяц черезе точку: ')
+parser.add_argument("-task", "--task_name", nargs=1, help="Введите задание: ")
+parser.add_argument("-day_and_month", "--day_and_month", nargs=1, help="Введите дату и месяц черезе точку: ")
 args = parser.parse_args()
 
 task_name_convert_to_json = f"{''.join(args.task_name)}.json"
-split_day_and_month_ = ''.join(args.day_and_month)
+split_day_and_month_ = "".join(args.day_and_month)
 
 if task_name_convert_to_json in os.listdir("../schedule_recording_program"):
-    print(f'{task_name_convert_to_json}: already exists')
+    print(f"{task_name_convert_to_json}: already exists")
 else:
 
     try:

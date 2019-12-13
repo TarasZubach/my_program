@@ -1,15 +1,13 @@
 import json
-import argparse
 import os
+from schedule_recording_program import argparser
 from datetime import datetime, timedelta
 
-parser = argparse.ArgumentParser()
-parser.add_argument("-task", "--task_name", nargs=1, help="Введите задание: ")
-parser.add_argument("-day_and_month", "--day_and_month", nargs=1, help="Введите дату и месяц черезе точку: ")
-args = parser.parse_args()
+import_argparser_args = argparser.args
 
-task_name_convert_to_json = f"{''.join(args.task_name)}.json"
-split_day_and_month_ = "".join(args.day_and_month)
+
+task_name_convert_to_json = f"{''.join(import_argparser_args.task_name)}.json"
+split_day_and_month_ = "".join(import_argparser_args.day_and_month)
 
 if task_name_convert_to_json in os.listdir("../schedule_recording_program"):
     print(f"{task_name_convert_to_json}: already exists")
@@ -25,19 +23,19 @@ else:
             scheduled_to_tomorrow = (datetime.today() + timedelta(days=1)).strftime("%d.%m")
 
             with open(task_name_convert_to_json, "w") as file:
-                file.write(json.dumps({''.join(args.task_name): f"Scheduled to {scheduled_to_tomorrow}"},
-                                      sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False))
+                json.dump({''.join(import_argparser_args.task_name): f"Scheduled to {scheduled_to_tomorrow}"}, file,
+                                      sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False)
 
         elif split_day_and_month_ == "day_after_tomorrow":
             scheduled_to_day_after_tomorrow = (datetime.today() + timedelta(days=2)).strftime("%d.%m")
 
             with open(task_name_convert_to_json, "w") as file:
 
-                file.write(json.dumps({''.join(args.task_name): f"Scheduled to {scheduled_to_day_after_tomorrow}"},
-                                      sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False))
+                json.dump({''.join(import_argparser_args.task_name): f"Scheduled to {scheduled_to_day_after_tomorrow}"},
+                    file, sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False)
 
     else:
         with open(task_name_convert_to_json, "w") as file:
 
-            file.write(json.dumps({''.join(args.task_name): f"Scheduled to {split_day_and_month_}"},
-                                  sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False))
+            json.dump({''.join(import_argparser_args.task_name): f"Scheduled to {split_day_and_month_}"},
+                file, sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False)

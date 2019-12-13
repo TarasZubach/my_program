@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 
 def schedule_recording_app():
-    imported_args = argparser.args
+    imported_args = argparser.func_argparser()
 
 
     task_name_convert_to_json = f"{''.join(imported_args.task_name)}.json"
@@ -40,4 +40,5 @@ def schedule_recording_app():
                 json.dump({''.join(imported_args.task_name): f"Scheduled to {convert_day_and_month}"},
                     file, sort_keys=True, separators=(",", ": "), indent=4, ensure_ascii=False)
 
-schedule_recording_app()
+if __name__ == "__main__":
+    schedule_recording_app()

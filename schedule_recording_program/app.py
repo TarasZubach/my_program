@@ -25,13 +25,10 @@ def schedule_recording_app():
     except ValueError:
 
         scheduled_date = ''
+        time_delta = {"tomorrow" : 1, "day_after_tomorrow" : 2}
 
-        if split_day_and_month == "tomorrow":
-            scheduled_date = (datetime.today() + timedelta(days=1)).strftime("%d.%m")
-
-
-        elif split_day_and_month == "day_after_tomorrow":
-            scheduled_date = (datetime.today() + timedelta(days=2)).strftime("%d.%m")
+        if split_day_and_month in ("tomorrow", "day_after_tomorrow"):
+            scheduled_date = (datetime.today() + timedelta(days=time_delta[split_day_and_month])).strftime("%d.%m")
 
         write_json_file(scheduled_date)
 

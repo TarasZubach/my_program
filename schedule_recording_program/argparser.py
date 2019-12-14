@@ -7,5 +7,3 @@ def func_argparser():
     args = parser.parse_args()
     return args
 
-if __name__ == "__main__":
-    func_argparser()
